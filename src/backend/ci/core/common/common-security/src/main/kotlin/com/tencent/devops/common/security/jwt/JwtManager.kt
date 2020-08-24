@@ -48,12 +48,14 @@ import java.util.concurrent.TimeUnit
 class JwtManager(
     private val privateKeyString: String?,
     private val publicKeyString: String?,
-    private val enable: Boolean
+    private val enable: Boolean,
+    private val pass: Boolean
 ) {
     private var token: String? = null
     private val publicKey: PublicKey?
     private val privateKey: PrivateKey?
     private val authEnable: Boolean
+    private val authPass: Boolean
     private val securityJwtInfo: SecurityJwtInfo?
 
     //    private val securityJwtInfo: SecurityJwtInfo
@@ -131,6 +133,11 @@ class JwtManager(
         return authEnable && !privateKeyString.isNullOrBlank() && !publicKeyString.isNullOrBlank()
     }
 
+    fun isAuthPass(): Boolean {
+        // authPass为true的时候，验证失败也通过
+        return authPass
+    }
+
     fun isSendEnable(): Boolean {
         // 只有authEnable=true，且privateKeyString、publicKeyString不为空的时候，才会验证
         return !privateKeyString.isNullOrBlank() && !publicKeyString.isNullOrBlank()
@@ -141,11 +148,13 @@ class JwtManager(
             privateKey = null
             publicKey = null
             authEnable = false
+            authPass = true
         } else {
             val keyFactory = KeyFactory.getInstance("RSA")
             privateKey = keyFactory.generatePrivate(PKCS8EncodedKeySpec(Base64Util.decode(privateKeyString)))
             publicKey = keyFactory.generatePublic(X509EncodedKeySpec(Base64Util.decode(publicKeyString)))
             authEnable = enable
+            authPass = pass
         }
         securityJwtInfo = SecurityJwtInfo(
             ip = InetAddress.getLocalHost().hostAddress,

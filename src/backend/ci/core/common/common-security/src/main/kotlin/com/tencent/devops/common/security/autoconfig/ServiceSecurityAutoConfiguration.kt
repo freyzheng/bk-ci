@@ -53,10 +53,13 @@ class ServiceSecurityAutoConfiguration {
     @Value("\${bkci.security.enable:#{false}}")
     private val enable: Boolean = false
 
+    @Value("\${bkci.security.pass:#{true}}")
+    private val pass: Boolean = true
+
     @Bean
     fun environmentUtil() = EnvironmentUtil()
 
     @Bean
     @DependsOn("environmentUtil")
-    fun jwtManager() = JwtManager(privateKey, publicKey, enable)
+    fun jwtManager() = JwtManager(privateKey, publicKey, enable, pass)
 }

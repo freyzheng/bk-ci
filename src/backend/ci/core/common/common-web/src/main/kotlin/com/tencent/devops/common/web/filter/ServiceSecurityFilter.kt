@@ -37,20 +37,24 @@ class ServiceSecurityFilter(
             val jwt = requestContext.getHeaderString(AUTH_HEADER_DEVOPS_JWT_TOKEN)
             if (jwt.isNullOrBlank()) {
                 logger.warn("Invalid request, jwt is empty!Client ip:$clientIp,uri:$uri")
-                throw ErrorCodeException(
-                    statusCode = 401,
-                    errorCode = CommonMessageCode.ERROR_SERVICE_NO_AUTH,
-                    defaultMessage = "Unauthorized:devops api jwt it empty."
-                )
+                if (!jwtManager.isAuthPass()) {
+                    throw ErrorCodeException(
+                            statusCode = 401,
+                            errorCode = CommonMessageCode.ERROR_SERVICE_NO_AUTH,
+                            defaultMessage = "Unauthorized:devops api jwt it empty."
+                    )
+                }
             }
             val checkResult: Boolean = jwtManager.verifyJwt(jwt)
             if (!checkResult) {
                 logger.warn("Invalid request, jwt is invalid or expired!Client ip:$clientIp,uri:$uri")
-                throw ErrorCodeException(
-                    statusCode = 401,
-                    errorCode = CommonMessageCode.ERROR_SERVICE_NO_AUTH,
-                    defaultMessage = "Unauthorized:devops api jwt it invalid or expired."
-                )
+                if (!jwtManager.isAuthPass()) {
+                    throw ErrorCodeException(
+                            statusCode = 401,
+                            errorCode = CommonMessageCode.ERROR_SERVICE_NO_AUTH,
+                            defaultMessage = "Unauthorized:devops api jwt it invalid or expired."
+                    )
+                }
             }
         }
     }

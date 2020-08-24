@@ -66,11 +66,12 @@ class JwtManagerTest {
             "wPml0ASz44JZEExii5cNN21wullKmAPmlfeAm7kjTGmu9pQ3NyqruP29OKL3MiB/\n" +
             "wrWQEX7q1vF+8sB1/KR7+M4YS7E="
     private val enable: Boolean = true
+    private val pass: Boolean = false
 
     @Test
     fun generateAndVerify() {
         // 生成并验证jwt token
-        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable)
+        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable, pass)
         val jwtToken = jwtManager.getToken()
         val verifyResult = jwtManager.verifyJwt(jwtToken!!)
         Assert.assertEquals(true, verifyResult)
@@ -79,7 +80,7 @@ class JwtManagerTest {
     @Test
     fun isAuthEnable() {
         // 判断是否需要验证
-        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable)
+        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable, pass)
         val isAuthEnable = jwtManager.isAuthEnable()
         Assert.assertEquals(true, isAuthEnable)
     }
@@ -87,7 +88,7 @@ class JwtManagerTest {
     @Test
     fun isSendEnable() {
         // 判断是否需要发送头部验证
-        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable)
+        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable, pass)
         val isSendEnable = jwtManager.isSendEnable()
         Assert.assertEquals(true, isSendEnable)
     }
@@ -95,7 +96,7 @@ class JwtManagerTest {
     @Test
     fun refreshToken() {
         // 生成并验证jwt token
-        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable)
+        val jwtManager = JwtManager(privateKeyString, publicKeyString, enable, pass)
         val jwtToken = jwtManager.getToken()
         val verifyResult = jwtManager.verifyJwt(jwtToken!!)
         Assert.assertEquals(true, verifyResult)
